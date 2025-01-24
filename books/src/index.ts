@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import {HttpError, NotFoundError} from "./error";
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
@@ -52,18 +53,38 @@ app.patch('/authors/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     const { author } = req.body;
 
-    const updatedAuthor = await prisma.author.update({
-        where: {
-            id: parseInt(id)
-        },
-        data: author
-    });
-
-    res.status(201).json(updatedAuthor);
+    try {
+        const updatedAuthor = await prisma.author.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: author
+        });
+        res.status(201).json(updatedAuthor);
+    } catch (err: unknown) {
+        if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
+            throw new NotFoundError('Author Not Found');
+        }
+    }
 });
 
 app.delete('/authors/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
+
+    try {
+        const deletedAuthor = await prisma.author.delete({
+            where: {
+                id: parseInt(id)
+            }
+        });
+
+        res.status(204).json(deletedAuthor);
+    } catch (err: unknown) {
+        if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
+            throw new NotFoundError('Author Not Found');
+        }
+        throw err;
+    }
 
     const deletedAuthor = await prisma.author.delete({
         where: {
