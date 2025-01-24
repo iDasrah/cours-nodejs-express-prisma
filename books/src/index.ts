@@ -1,10 +1,15 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
+import {HttpError, NotFoundError} from "./error";
 
 const prisma = new PrismaClient();
 
 const app = express();
 const port = 3000;
+
+app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
+    res.status(err.status ?? 500).send(err.message);
+});
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!');
@@ -22,7 +27,13 @@ app.get('/authors/:id', async (req: Request, res: Response) => {
             id: parseInt(id)
         }
     });
-    res.json(author);
+
+    if (author) {
+        res.status(200);
+        res.send(author);
+    } else {
+        throw new NotFoundError('Author not found');
+    }
 });
 
 app.listen(port, () => {
