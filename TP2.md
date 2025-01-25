@@ -207,6 +207,8 @@ export async function create_one(req: Request, res: Response) {
 
 La fonction `assert` de `superstruct` vérifie que les données passées en premier argument correspondent bien au schéma passé en deuxième argument, et `throw` un objet de type `StructError` avec notamment un message précisant la raison de l'échec de la validation si ce n'est pas le cas.
 
+> En plus de cette vérification, `superstruct` permet à TypeScript de préciser le type des données validées (survolez les données extraites de `req.body` avec ou sans l'appel préalable à `assert`), ce qui permet de bénéficier de la vérification de types de TypeScript pour les données validées.
+
 Dans notre `middleware` de gestion d'erreur global, on peut vérifier que l'objet `err` reçu correspond à un objet de ce type, et si c'est le cas, configurer un status code de `400` (Bad Request) pour la réponse.
 Si on le souhaite, on peut aussi modifier le message d'erreur pour donner plus de détails sur la cause de l'erreur en utilisant par exemple la propriété `key` de l'objet `err` qui indique le champ qui a échoué à la validation (https://docs.superstructjs.org/api-reference/errors).
 
@@ -225,28 +227,50 @@ import { StructError } from 'superstruct';
 > 
 > Créer et utiliser de la même manière les schémas de validation pour l'entité `Book`.
 
-# Validation des paramètres des requêtes
+# Validation des paramètres des chemins
 
-Pour le moment, on a utilisé les paramètres des requêtes (notamment les segments variables des chemins des routes) directement dans les `middlewares` de gestion des requêtes sans les valider.
+Pour le moment, on a utilisé les les segments variables des chemins des routes directement dans les `middlewares` de gestion des requêtes sans les valider.
 
-Ainsi, rien n'empêche un client de faire une requête `GET /authors/abc` alors que l'identifiant de l'auteur est normalement attendu sous forme d'un nombre entier.
+Ainsi, rien n'empêche un client de faire une requête `GET /authors/abc` alors que dans notre code, l'identifiant de l'auteur est normalement attendu sous la forme d'un nombre entier.
 
-Pour vérifier par exemple que le champ `author_id` est bien une chaîne de caractères qui contient l'expression d'un entier valide, on peut utiliser le module `validator` :
+Pour vérifier par exemple que le champ `author_id` est bien une chaîne de caractères qui contient l'expression d'un entier valide, on peut utiliser la bibliothèque `validator` qui fournit de nombreuses fonctions permettant de vérifier qu'une chaîne de caractères correspond à un certain format (https://github.com/validatorjs/validator.js?tab=readme-ov-file#validators).
 ```bash
 npm install validator
 npm install -D @types/validator
 ```
 
-Ensuite, on va créer un schéma de validation `AuthorGetOneParams` dédié à la validation des paramètres de la requête `GET /authors/:author_id` :
+`superstruct` permet d'appeler la fonction de vérification que l'on souhaite dans ce qu'ils appellent des `Custom Refinements` : https://docs.superstructjs.org/api-reference/refinements#custom-refinements.
+
+Dans notre module principal `src/index.ts`, on va créer un schéma de validation pour l'ensemble des paramètres possibles de nos routes (pour le moment, `author_id` et `book_id`) :
 ```ts
-import { object, string } from 'superstruct';
+import { object, optional, refine, string } from 'superstruct';
 import { isInt } from 'validator';
 
-export const AuthorGetOneParams = object({
-  author_id: refine(string(), 'int', (value) => isInt(value))
+export const ReqParams = object({
+  author_id: optional(refine(string(), 'int', (value) => isInt(value))),
+  book_id: optional(refine(string(), 'int', (value) => isInt(value)))
 });
 ```
 
-> Utiliser ce schéma de validation dans le `middleware` de récupération d'un auteur.
-> 
-> Puis, faire de même pour toutes les requêtes qui utilisent des paramètres de chemin.
+> Ces propriétés sont déclarées ici comme optionnelles. Cela veut dire que si elles sont présentes, alors elles devront respecter les contraintes définies, mais si elles ne sont pas présentes, cela ne posera pas de problème. Ainsi, on peut utiliser ce schéma pour valider les paramètres de requête de n'importe quelle route, même si ces paramètres ne sont pas utilisés dans le `middleware` de gestion des requêtes.
+
+On peut maintenant créer un `middleware` intermédiaire de validation de ces paramètres :
+```typescript
+const validateParams = (req: Request, res: Response, next: NextFunction) => {
+  assert(req.params, ReqParams);
+  next();
+};
+```
+
+Puis, le brancher sur toutes les routes qui utilisent des paramètres de chemin, comme par exemple :
+```typescript
+app.route('/authors/:author_id')
+  .all(validateParams)
+  .get(author.get_one)
+  .patch(author.update_one)
+  .delete(author.delete_one);
+```
+
+> Faire de même pour toutes les requêtes qui utilisent des paramètres de chemin.
+
+> On continuera ce principe de validation des paramètres de requête pour toutes les routes qu'on ajoutera par la suite.

@@ -222,10 +222,16 @@ Dans l'application `express`, déclarer et écrire les route HTTP suivantes :
 
 Pour renvoyer une réponse au format JSON, utiliser la méthode `json` de l'objet `Response` (https://expressjs.com/en/5x/api.html#res.json).
 
+Pour accéder à la valeur du paramètre `author_id` dans la route `GET /authors/:author_id`, on utilise la propriété `params` de l'objet `Request` (https://expressjs.com/en/5x/api.html#req.params).
+
+> On testera plus tard que ces paramètres (qui sont toujours des `string` issus du chemin) peuvent bien être convertis en des entiers. Pour le moment, fournir autre chose qu'un entier provoquera une erreur.
+
 La documentation de `Prisma` relative à l'ensemble des opérations CRUD est disponible ici : https://www.prisma.io/docs/orm/prisma-client/queries/crud.
 Pour les 2 routes à écrire, voir les fonctions `findMany` et `findUnique`.
 
 Attention, comme ces fonctions renvoient des `Promise` dont on va devoir attendre la résolution avec le mot clé `await`, nos `middlewares` de gestion des requêtes seront asynchrones. Il faut alors les déclarer comme `async`.
+
+# Postman
 
 Installer l'application Postman (https://www.postman.com/downloads/).
 Afin de pouvoir gérer des `Collections`, il faut créer un compte (gratuit).
