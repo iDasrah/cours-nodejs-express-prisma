@@ -1,8 +1,18 @@
 import express, { Request, Response, NextFunction } from 'express';
 import {HttpError} from "./error";
-import {StructError} from "superstruct";
+import {assert, object, optional, refine, string, StructError} from "superstruct";
 import {createAuthor, deleteAuthor, getAllAuthors, getOneAuthor, updateAuthor} from "./requestHandlers/author";
 import {createBook, deleteBook, getAllBooks, getBooksByAuthor, getOneBook, updateBook} from "./requestHandlers/book";
+import {isInt} from "validator";
+
+export const ReqParams = object({
+    id: optional(refine(string(), 'int', (value) => isInt(value)))
+})
+
+const validateParams = (req: Request, res: Response, next: NextFunction) => {
+    assert(req.params, ReqParams);
+    next();
+}
 
 const app = express();
 const port = 3000;
@@ -32,6 +42,7 @@ app.route('/authors')
     .post(createAuthor);
 
 app.route('/authors/:id')
+    .all(validateParams)
     .get(getOneAuthor)
     .patch(updateAuthor)
     .delete(deleteAuthor);
@@ -40,11 +51,13 @@ app.route('/authors/:id')
 app.get('/books', getAllBooks);
 
 app.route('/books/:id')
+    .all(validateParams)
     .get(getOneBook)
     .patch(updateBook)
     .delete(deleteBook);
 
 app.route('/authors/:id/books')
+    .all(validateParams)
     .get(getBooksByAuthor)
     .post(createBook);
 
