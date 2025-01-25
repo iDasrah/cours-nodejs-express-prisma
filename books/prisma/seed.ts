@@ -4,22 +4,43 @@ const prisma = new PrismaClient();
 
 const authors = [
     {
-        firstname: 'J. R. R.',
-        lastname: 'Tolkien'
+        firstName: 'J. R. R.',
+        lastName: 'Tolkien',
+        books: {
+            create: [
+                {
+                    title: 'The Hobbit',
+                    publication_year: 1937,
+                },
+                {
+                    title: 'The Lord of the Rings',
+                    publication_year: 1954,
+                }
+            ]
+        }
     },
     {
-        firstname: 'H. P.',
-        lastname: 'Lovecraft'
+        firstName: 'H. P.',
+        lastName: 'Lovecraft',
+        books: {
+            create: [
+                {
+                    title: 'At the Mountains of Madness',
+                    publication_year: 1936,
+                },
+                {
+                    title: 'The Call of Cthulhu',
+                    publication_year: 1928,
+                }
+            ]
+        }
     }
 ];
 
 async function main() {
     for (const author of authors) {
         await prisma.author.create({
-            data: {
-                firstName: author.firstname,
-                lastName: author.lastname
-            }
+            data: author,
         });
     }
 }
