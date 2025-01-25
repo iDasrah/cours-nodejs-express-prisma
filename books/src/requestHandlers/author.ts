@@ -3,7 +3,7 @@ import {prisma} from "../db";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import {NotFoundError} from "../error";
 import {assert} from "superstruct";
-import {AuthorCreationData} from "../validation/author";
+import {AuthorCreationData, AuthorUpdateData} from "../validation/author";
 
 export const getAllAuthors = async(req: Request, res: Response) => {
     const authors = await prisma.author.findMany();
@@ -38,6 +38,7 @@ export const createAuthor = async(req: Request, res: Response) => {
 export const updateAuthor = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { author } = req.body;
+    assert(author, AuthorUpdateData);
 
     try {
         const updatedAuthor = await prisma.author.update({
