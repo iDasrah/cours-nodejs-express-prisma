@@ -1,6 +1,8 @@
 import {prisma} from "../db";
 import {Request, Response} from "express";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
+import {BookCreationData, BookUpdateData} from "../validation/book";
+import {assert} from "superstruct";
 
 export const getAllBooks = async(req: Request, res: Response) => {
     const books = await prisma.book.findMany();
@@ -40,6 +42,7 @@ export const getBooksByAuthor = async(req: Request, res: Response) => {
 export const createBook = async(req: Request, res: Response) => {
     const {id} = req.params;
     const {book} = req.body;
+    assert(book, BookCreationData);
 
     const createdBook = await prisma.book.create({
         data: {
@@ -58,6 +61,7 @@ export const createBook = async(req: Request, res: Response) => {
 export const updateBook = async(req: Request, res: Response) => {
     const {id} = req.params;
     const {book} = req.body;
+    assert(book, BookUpdateData);
 
     try {
         const updatedBook = await prisma.book.update({
@@ -65,12 +69,7 @@ export const updateBook = async(req: Request, res: Response) => {
                 id: parseInt(id)
             },
             data: {
-                ...book,
-                author: {
-                    connect: {
-                        id: parseInt(book.authorId)
-                    }
-                }
+                ...book
             }
         });
 
