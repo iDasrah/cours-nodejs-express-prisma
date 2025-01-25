@@ -1,11 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
-import {HttpError, NotFoundError} from "./error";
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import {HttpError} from "./error";
 import {createAuthor, deleteAuthor, getAllAuthors, getOneAuthor, updateAuthor} from "./requestHandlers/author";
 import {createBook, deleteBook, getAllBooks, getBooksByAuthor, getOneBook, updateBook} from "./requestHandlers/book";
-
-const prisma = new PrismaClient();
 
 const app = express();
 const port = 3000;
@@ -22,51 +18,26 @@ app.get('/', (req: Request, res: Response) => {
 
 // AUTHORS
 
-app.get('/authors', async (req: Request, res: Response) => {
-    await getAllAuthors(req, res);
-});
+app.route('/authors')
+    .get(getAllAuthors)
+    .post(createAuthor);
 
-app.get('/authors/:id', async (req: Request, res: Response) => {
-    await getOneAuthor(req, res);
-});
-
-app.post('/authors', async (req: Request, res: Response) => {
-    await createAuthor(req, res);
-});
-
-app.patch('/authors/:id', async (req: Request, res: Response) => {
-    await updateAuthor(req, res);
-});
-
-app.delete('/authors/:id', async (req: Request, res: Response) => {
-    await deleteAuthor(req, res);
-});
+app.route('/authors/:id')
+    .get(getOneAuthor)
+    .patch(updateAuthor)
+    .delete(deleteAuthor);
 
 // BOOKS
+app.get('/books', getAllBooks);
 
-app.get('/books', async (req: Request, res: Response) => {
-    await getAllBooks(req, res);
-});
+app.route('/books/:id')
+    .get(getOneBook)
+    .patch(updateBook)
+    .delete(deleteBook);
 
-app.get('/books/:id', async (req: Request, res: Response)=> {
-    await getOneBook(req, res);
-});
-
-app.get('/authors/:id/books', async (req: Request, res: Response) => {
-    await getBooksByAuthor(req, res);
-});
-
-app.post('/authors/:id/books', async (req: Request, res: Response) => {
-    await createBook(req, res);
-});
-
-app.patch('/books/:id', async (req: Request, res: Response) => {
-    await updateBook(req, res);
-});
-
-app.delete('/books/:id', async (req: Request, res: Response) => {
-    await deleteBook(req, res);
-});
+app.route('/authors/:id/books')
+    .get(getBooksByAuthor)
+    .post(createBook);
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
