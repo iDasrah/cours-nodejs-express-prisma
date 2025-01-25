@@ -2,6 +2,8 @@ import {Request, Response} from "express";
 import {prisma} from "../db";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import {NotFoundError} from "../error";
+import {assert} from "superstruct";
+import {AuthorCreationData} from "../validation/author";
 
 export const getAllAuthors = async(req: Request, res: Response) => {
     const authors = await prisma.author.findMany();
@@ -22,6 +24,8 @@ export const getOneAuthor = async(req: Request, res: Response) => {
 
 export const createAuthor = async(req: Request, res: Response) => {
     const { author } = req.body;
+    assert(author, AuthorCreationData);
+
     const createdAuthor = await prisma.author.create(
         {
             data: author

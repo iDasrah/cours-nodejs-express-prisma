@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.2.1",
-    "express": "^5.0.1"
+    "express": "^5.0.1",
+    "superstruct": "^2.0.2"
   }
 }
