@@ -72,12 +72,4 @@ export const deleteAuthor = async (req: Request, res: Response) => {
         }
         throw err;
     }
-
-    const deletedAuthor = await prisma.author.delete({
-        where: {
-            id: parseInt(id)
-        }
-    });
-
-    res.status(204).json(deletedAuthor);
 }
