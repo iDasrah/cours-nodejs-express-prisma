@@ -4,6 +4,15 @@ import {assert, object, optional, refine, string, StructError} from "superstruct
 import {createAuthor, deleteAuthor, getAllAuthors, getOneAuthor, updateAuthor} from "./requestHandlers/author";
 import {createBook, deleteBook, getAllBooks, getBooksByAuthor, getOneBook, updateBook} from "./requestHandlers/book";
 import {isInt} from "validator";
+import {
+    addTagToBook,
+    createTag,
+    deleteTag,
+    getAllTags,
+    getOneTag,
+    getTagsByBook, removeTagFromBook,
+    updateTag
+} from "./requestHandlers/tag";
 
 export const ReqParams = object({
     id: optional(refine(string(), 'int', (value) => isInt(value)))
@@ -61,6 +70,28 @@ app.route('/authors/:id/books')
     .get(getBooksByAuthor)
     .post(createBook);
 
+// TAGS
+
+app.route('/tags')
+    .get(getAllTags)
+    .post(createTag);
+
+app.route('/tags/:id')
+    .get(getOneTag)
+    .post(createTag)
+    .patch(updateTag)
+    .delete(deleteTag);
+
+app.route('/books/:book_id/tags/:tag_id')
+    .post(addTagToBook)
+    .delete(removeTagFromBook);
+
+app.get('/books/:id/tags', getTagsByBook);
+
+
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });
+
+
+
