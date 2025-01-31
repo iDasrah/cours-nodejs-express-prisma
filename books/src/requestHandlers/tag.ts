@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { prisma } from "../db";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import {HttpError, NotFoundError} from "../error";
+import {assert} from "superstruct";
+import {TagCreationData, TagUpdateData} from "../validation/tag";
 
 export const getAllTags = async (req: Request, res: Response) => {
     const tags = await prisma.tag.findMany();
@@ -38,13 +40,12 @@ export const getTagsByBook = async (req: Request, res: Response) => {
 }
 
 export const createTag = async (req: Request, res: Response) => {
-    const { name } = req.body;
+    const { tag } = req.body;
+    assert(tag, TagCreationData);
 
     try {
         const createdTag = await prisma.tag.create({
-            data: {
-                name
-            }
+            data: tag
         });
 
         res.json(createdTag).status(201);
@@ -57,16 +58,15 @@ export const createTag = async (req: Request, res: Response) => {
 
 export const updateTag = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const { tag } = req.body;
+    assert(tag, TagUpdateData);
 
     try {
         const updatedTag = await prisma.tag.update({
             where: {
                 id: parseInt(id)
             },
-            data: {
-                name
-            }
+            data: tag
         });
 
         res.json(updatedTag).status(200);
