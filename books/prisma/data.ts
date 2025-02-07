@@ -161,7 +161,7 @@ export const authors = [
 export const users = [
     {
         email: 'admin@books.fr',
-        password: '$2a$12$6e5GiCksRAi/NP44u0EJ.Ord2Rvvl.HQHEmeE8FcqESWppRxv4en.',
+        password: '$2a$12$J/BVgO5UudzNHlE.FxDiquXSIk55CjJRtLxFRX4Vba7k5NMqNzfcq',
         username: 'admin',
         ratings: {
             create: [
