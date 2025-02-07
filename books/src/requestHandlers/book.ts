@@ -1,11 +1,25 @@
 import {prisma} from "../db";
+import { Prisma } from "@prisma/client";
 import {Request, Response} from "express";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import {BookCreationData, BookUpdateData} from "../validation/book";
 import {assert} from "superstruct";
 
 export const getAllBooks = async(req: Request, res: Response) => {
-    const books = await prisma.book.findMany();
+    const filter: Prisma.BookWhereInput = {};
+
+    if (req.query.title) {
+        filter.title = {
+            contains: String(req.query.title)
+        };
+    }
+
+    const books = await prisma.book.findMany({
+        where: filter,
+        orderBy: {
+            title: 'asc'
+        }
+    });
 
     res.status(200).json(books);
 }

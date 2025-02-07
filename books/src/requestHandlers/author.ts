@@ -1,13 +1,37 @@
 import {Request, Response} from "express";
 import {prisma} from "../db";
+import { Prisma } from "@prisma/client";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import {NotFoundError} from "../error";
 import {assert} from "superstruct";
 import {AuthorCreationData, AuthorUpdateData} from "../validation/author";
 
 export const getAllAuthors = async(req: Request, res: Response) => {
-    const authors = await prisma.author.findMany();
-    res.json(authors);
+    const filter: Prisma.AuthorWhereInput = {};
+
+    if (req.query.lastName) {
+        filter.lastName = {
+            contains: String(req.query.lastName)
+        };
+    }
+
+    if (req.query.hasBooks) {
+        filter.books = {
+            some: {}
+        };
+    }
+
+    const authors = await prisma.author.findMany({
+        where: filter,
+        orderBy: {
+            lastName: 'asc'
+        },
+        include: {
+            books: true
+        }
+    });
+
+    res.status(200).json(authors);
 }
 
 export const getOneAuthor = async(req: Request, res: Response) => {
