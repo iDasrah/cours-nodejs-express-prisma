@@ -8,6 +8,7 @@ import {assert} from "superstruct";
 export const getAllBooks = async(req: Request, res: Response) => {
     const filter: Prisma.BookWhereInput = {};
     const assoc: Prisma.BookInclude = {};
+    const pagination: Prisma.BookFindManyArgs = {};
 
     // filters
     if (req.query.title) {
@@ -27,12 +28,22 @@ export const getAllBooks = async(req: Request, res: Response) => {
         };
     }
 
+    // pagination
+    if (req.query.take) {
+        pagination.take = parseInt(req.query.take as string);
+    }
+
+    if (req.query.skip) {
+        pagination.skip = parseInt(req.query.skip as string);
+    }
+
     const books = await prisma.book.findMany({
         where: filter,
         orderBy: {
             title: 'asc'
         },
-        include: assoc
+        include: assoc,
+        ...pagination
     });
 
     res.status(200).json(books);

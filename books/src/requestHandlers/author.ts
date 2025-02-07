@@ -9,6 +9,7 @@ import {AuthorCreationData, AuthorUpdateData} from "../validation/author";
 export const getAllAuthors = async(req: Request, res: Response) => {
     const filter: Prisma.AuthorWhereInput = {};
     const assoc: Prisma.AuthorInclude = {};
+    const pagination: Prisma.AuthorFindManyArgs = {};
 
     // filters
     if (req.query.lastName) {
@@ -33,12 +34,22 @@ export const getAllAuthors = async(req: Request, res: Response) => {
         }
     }
 
+    // pagination
+    if (req.query.take) {
+        pagination.take = parseInt(req.query.take as string);
+    }
+
+    if (req.query.skip) {
+        pagination.skip = parseInt(req.query.skip as string);
+    }
+
     const authors = await prisma.author.findMany({
         where: filter,
         orderBy: {
             lastName: 'asc'
         },
-        include: assoc
+        include: assoc,
+        ...pagination
     });
 
     res.status(200).json(authors);
