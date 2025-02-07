@@ -2,13 +2,14 @@ import {prisma} from "../db";
 import { Prisma } from "@prisma/client";
 import {Request, Response} from "express";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
-import {BookCreationData, BookUpdateData} from "../validation/book";
+import {BookCreationData, BookUpdateData, QueryString} from "../validation/book";
 import {assert} from "superstruct";
 
 export const getAllBooks = async(req: Request, res: Response) => {
     const filter: Prisma.BookWhereInput = {};
     const assoc: Prisma.BookInclude = {};
     const pagination: Prisma.BookFindManyArgs = {};
+    assert(req.query, QueryString);
 
     // filters
     if (req.query.title) {
@@ -67,6 +68,7 @@ export const getBooksByAuthor = async(req: Request, res: Response) => {
     const filter: Prisma.BookWhereInput = {};
     const pagination: Prisma.BookFindManyArgs = {};
 
+    assert(req.query, QueryString);
 
     // filters
     if (req.query.title) {

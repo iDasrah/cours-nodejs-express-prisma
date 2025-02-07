@@ -4,12 +4,14 @@ import { Prisma } from "@prisma/client";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import {NotFoundError} from "../error";
 import {assert} from "superstruct";
-import {AuthorCreationData, AuthorUpdateData} from "../validation/author";
+import {AuthorCreationData, AuthorUpdateData, QueryString} from "../validation/author";
 
 export const getAllAuthors = async(req: Request, res: Response) => {
     const filter: Prisma.AuthorWhereInput = {};
     const assoc: Prisma.AuthorInclude = {};
     const pagination: Prisma.AuthorFindManyArgs = {};
+
+    assert(req.query, QueryString);
 
     // filters
     if (req.query.lastName) {
