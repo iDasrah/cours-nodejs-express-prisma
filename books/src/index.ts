@@ -13,6 +13,15 @@ import {
     getTagsByBook, removeTagFromBook,
     updateTag
 } from "./requestHandlers/tag";
+import {createUser, loginUser} from "./requestHandlers/user";
+import {createBookComment, deleteBookComment, getBookComments, updateBookComment} from "./requestHandlers/comment";
+import {
+    createBookRating,
+    deleteBookRating,
+    getAverageBookRating,
+    getBookRatings,
+    updateBookRating
+} from "./requestHandlers/rating";
 
 export const ReqParams = object({
     id: optional(refine(string(), 'int', (value) => isInt(value)))
@@ -57,6 +66,7 @@ app.route('/authors/:id')
     .delete(deleteAuthor);
 
 // BOOKS
+
 app.get('/books', getAllBooks);
 
 app.route('/books/:id')
@@ -87,6 +97,33 @@ app.route('/books/:book_id/tags/:tag_id')
     .delete(removeTagFromBook);
 
 app.get('/books/:id/tags', getTagsByBook);
+
+// USERS
+
+app.post('/signup', createUser);
+app.post('/signin', loginUser);
+
+// COMMENTS
+
+app.route('/books/:id/comments')
+    .get(getBookComments)
+    .post(createBookComment);
+
+app.route('/comments/:id')
+    .patch(updateBookComment)
+    .delete(deleteBookComment);
+
+// RATINGS
+
+app.route('/books/:id/ratings')
+    .get(getBookRatings)
+    .post(createBookRating);
+
+app.route('/ratings/:id')
+    .patch(updateBookRating)
+    .delete(deleteBookRating);
+
+app.get('/books/:id/ratings/average', getAverageBookRating);
 
 
 app.listen(port, () => {
