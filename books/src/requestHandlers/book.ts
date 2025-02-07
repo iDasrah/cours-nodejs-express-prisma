@@ -7,10 +7,23 @@ import {assert} from "superstruct";
 
 export const getAllBooks = async(req: Request, res: Response) => {
     const filter: Prisma.BookWhereInput = {};
+    const assoc: Prisma.BookInclude = {};
 
+    // filters
     if (req.query.title) {
         filter.title = {
             contains: String(req.query.title)
+        };
+    }
+
+    // assoc
+    if (req.query.include) {
+        assoc.author = {
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true
+            }
         };
     }
 
@@ -18,7 +31,8 @@ export const getAllBooks = async(req: Request, res: Response) => {
         where: filter,
         orderBy: {
             title: 'asc'
-        }
+        },
+        include: assoc
     });
 
     res.status(200).json(books);

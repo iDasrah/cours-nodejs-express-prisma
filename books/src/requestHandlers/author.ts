@@ -8,7 +8,9 @@ import {AuthorCreationData, AuthorUpdateData} from "../validation/author";
 
 export const getAllAuthors = async(req: Request, res: Response) => {
     const filter: Prisma.AuthorWhereInput = {};
+    const assoc: Prisma.AuthorInclude = {};
 
+    // filters
     if (req.query.lastName) {
         filter.lastName = {
             contains: String(req.query.lastName)
@@ -21,14 +23,22 @@ export const getAllAuthors = async(req: Request, res: Response) => {
         };
     }
 
+    // associations
+    if (req.query.include) {
+        assoc.books = {
+            select: {
+                id: true,
+                title: true,
+            }
+        }
+    }
+
     const authors = await prisma.author.findMany({
         where: filter,
         orderBy: {
             lastName: 'asc'
         },
-        include: {
-            books: true
-        }
+        include: assoc
     });
 
     res.status(200).json(authors);
