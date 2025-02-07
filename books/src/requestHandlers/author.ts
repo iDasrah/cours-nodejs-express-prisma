@@ -52,7 +52,7 @@ export const getAllAuthors = async(req: Request, res: Response) => {
         ...pagination
     });
 
-    res.status(200).json(authors);
+    res.status(200).json(authors).set('X-Total-Count', authors.length.toString());
 }
 
 export const getOneAuthor = async(req: Request, res: Response) => {

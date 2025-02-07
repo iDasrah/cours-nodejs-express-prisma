@@ -46,7 +46,7 @@ export const getAllBooks = async(req: Request, res: Response) => {
         ...pagination
     });
 
-    res.status(200).json(books);
+    res.status(200).json(books).set('X-Total-Count', books.length.toString());
 }
 
 export const getOneBook = async(req: Request, res: Response) => {
@@ -99,7 +99,7 @@ export const getBooksByAuthor = async(req: Request, res: Response) => {
         },
     });
 
-    if (author) res.status(200).json(author.books);
+    if (author) res.status(200).json(author.books).set('X-Total-Count', author.books.length.toString());
     else res.status(404).json({error: 'Author Not Found'});
 }
 
