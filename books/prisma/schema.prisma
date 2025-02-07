@@ -18,16 +18,49 @@ model Author {
 }
 
 model Book {
-  id               Int    @id @default(autoincrement())
+  id               Int       @id @default(autoincrement())
   title            String
   publication_year Int?
-  author           Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author           Author    @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId         Int
   tags             Tag[]
+  comments         Comment[]
+  ratings          Rating[]
 }
 
 model Tag {
   id    Int    @id @default(autoincrement())
   name  String @unique
   books Book[]
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  password String
+  username String    @unique
+  comments Comment[]
+  ratings  Rating[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int?
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  bookId    Int?
+
+  @@unique([userId, bookId])
+}
+
+model Rating {
+  id     Int   @id @default(autoincrement())
+  value  Int
+  User   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int?
+  Book   Book? @relation(fields: [bookId], references: [id])
+  bookId Int?
 }
