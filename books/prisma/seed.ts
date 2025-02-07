@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { tags, authors } from './data';
+import { tags, authors, users } from './data';
 
 const prisma = new PrismaClient();
 
@@ -12,6 +12,12 @@ async function main() {
     for (const author of authors) {
         await prisma.author.create({
             data: author,
+        });
+    }
+
+    for (const user of users) {
+        await prisma.user.create({
+            data: user,
         });
     }
 }

@@ -169,7 +169,7 @@ export const users = [
                     value: 5,
                     book: {
                         connect: {
-                            title: 'The Hobbit'
+                            id: 1
                         }
                     }
                 },
@@ -177,7 +177,7 @@ export const users = [
                     value: 4,
                     book: {
                         connect: {
-                            title: 'The Lord of the Rings'
+                            id: 2
                         }
                     }
                 },
@@ -185,31 +185,7 @@ export const users = [
                     value: 3,
                     book: {
                         connect: {
-                            title: 'The Call of Cthulhu'
-                        }
-                    }
-                },
-                {
-                    value: 2,
-                    book: {
-                        connect: {
-                            title: 'At the Mountains of Madness'
-                        }
-                    }
-                },
-                {
-                    value: 1,
-                    book: {
-                        connect: {
-                            title: 'Carrie'
-                        }
-                    }
-                },
-                {
-                    value: 2,
-                    book: {
-                        connect: {
-                            title: 'The Shining'
+                            id: 3
                         }
                     }
                 },
@@ -217,34 +193,10 @@ export const users = [
                     value: 3,
                     book: {
                         connect: {
-                            title: 'A Game of Thrones'
+                            id: 5
                         }
-                    }
-                },
-                {
-                    value: 4,
-                    book: {
-                        connect: {
-                            title: 'A Clash of Kings'
                         }
-                    }
-                },
-                {
-                    value: 5,
-                    book: {
-                        connect: {
-                            title: 'The Colour of Magic'
-                        }
-                    }
-                },
-                {
-                    value: 4,
-                    book: {
-                        connect: {
-                            title: 'Mort'
-                        }
-                    }
-                }
+                    },
             ]
         },
         comments: {
@@ -253,7 +205,7 @@ export const users = [
                     content: 'Great book!',
                     book: {
                         connect: {
-                            title: 'The Hobbit'
+                            id: 1
                         }
                     }
                 },
@@ -261,7 +213,7 @@ export const users = [
                     content: 'I loved it!',
                     book: {
                         connect: {
-                            title: 'The Lord of the Rings'
+                            id: 2
                         }
                     }
                 },
@@ -269,7 +221,7 @@ export const users = [
                     content: 'Scary!',
                     book: {
                         connect: {
-                            title: 'The Call of Cthulhu'
+                            id: 3
                         }
                     }
                 },
@@ -277,58 +229,10 @@ export const users = [
                     content: 'Very scary!',
                     book: {
                         connect: {
-                            title: 'At the Mountains of Madness'
+                            id: 5
                         }
                     }
                 },
-                {
-                    content: 'Not my cup of tea',
-                    book: {
-                        connect: {
-                            title: 'Carrie'
-                        }
-                    }
-                },
-                {
-                    content: 'I was scared!',
-                    book: {
-                        connect: {
-                            title: 'The Shining'
-                        }
-                    }
-                },
-                {
-                    content: 'Great book!',
-                    book: {
-                        connect: {
-                            title: 'A Game of Thrones'
-                        }
-                    }
-                },
-                {
-                    content: 'I loved it!',
-                    book: {
-                        connect: {
-                            title: 'A Clash of Kings'
-                        }
-                    }
-                },
-                {
-                    content: 'Very funny!',
-                    book: {
-                        connect: {
-                            title: 'The Colour of Magic'
-                        }
-                    }
-                },
-                {
-                    content: 'I laughed a lot!',
-                    book: {
-                        connect: {
-                            title: 'Mort'
-                        }
-                    }
-                }
             ]
         }
     }
