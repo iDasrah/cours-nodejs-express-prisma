@@ -64,13 +64,27 @@ export const getOneBook = async(req: Request, res: Response) => {
 
 export const getBooksByAuthor = async(req: Request, res: Response) => {
     const {id} = req.params;
+    const filter: Prisma.BookWhereInput = {};
+
+
+    // filters
+    if (req.query.title) {
+        filter.title = {
+            contains: String(req.query.title)
+        };
+    }
 
     const author = await prisma.author.findUnique({
         where: {
-            id: parseInt(id)
+            id: parseInt(id),
         },
         include: {
-            books: true
+            books: {
+                    where: filter,
+                    orderBy: {
+                        title: 'asc'
+                    }
+                }
         }
     });
 
