@@ -1,5 +1,7 @@
 import { Request, Response} from "express";
 import { prisma } from "../db";
+import {assert} from "superstruct";
+import {RatingData} from "../validation/rating";
 
 export const getBookRatings = async(req: Request, res: Response) => {
     const book = await prisma.book.findUnique({
@@ -17,6 +19,7 @@ export const getBookRatings = async(req: Request, res: Response) => {
 export const createBookRating = async(req: Request, res: Response) => {
     const { id } = req.params;
     const {rating} = req.body;
+    assert(rating, RatingData);
 
     const createdRating = await prisma.rating.create({
         data: {
@@ -35,6 +38,7 @@ export const createBookRating = async(req: Request, res: Response) => {
 export const updateBookRating = async(req: Request, res: Response) => {
     const {id} = req.params;
     const {rating} = req.body;
+    assert(rating, RatingData);
 
     const updatedRating = await prisma.rating.update({
         where: {
