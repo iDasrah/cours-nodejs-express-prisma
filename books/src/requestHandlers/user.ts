@@ -4,6 +4,7 @@ import {assert} from "superstruct";
 import {CreateUserData, LoginUserData} from "../validation/user";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import {compare, hash} from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const createUser = async(req: Request, res: Response) => {
     const {user} = req.body;
@@ -18,13 +19,13 @@ export const createUser = async(req: Request, res: Response) => {
             }
         });
 
-        res.status(201).json(
-            {
-                id: createdUser.id,
-                email: createdUser.email,
-                username: createdUser.username
-            }
-        );
+        const newUser : {id: number, email: string, username: string} = {
+            id: createdUser.id,
+            email: createdUser.email,
+            username: createdUser.username
+        }
+
+        res.status(201).json(newUser);
     } catch (err: unknown) {
         if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002') {
             res.status(409).json({error: 'User Already Exists'});
@@ -53,9 +54,13 @@ export const loginUser = async(req: Request, res: Response) => {
         return;
     }
 
-    res.status(200).json({
+    const loggedUser : {id: number, email: string, username: string} = {
         id: foundUser.id,
         email: foundUser.email,
         username: foundUser.username
-    });
+    }
+
+    const token = jwt.sign(loggedUser, process.env.JWT_SECRET as string);
+
+    res.status(200).json({token, loggedUser});
 }
