@@ -65,6 +65,7 @@ export const getOneBook = async(req: Request, res: Response) => {
 export const getBooksByAuthor = async(req: Request, res: Response) => {
     const {id} = req.params;
     const filter: Prisma.BookWhereInput = {};
+    const pagination: Prisma.BookFindManyArgs = {};
 
 
     // filters
@@ -72,6 +73,15 @@ export const getBooksByAuthor = async(req: Request, res: Response) => {
         filter.title = {
             contains: String(req.query.title)
         };
+    }
+
+    // pagination
+    if (req.query.take) {
+        pagination.take = parseInt(req.query.take as string);
+    }
+
+    if (req.query.skip) {
+        pagination.skip = parseInt(req.query.skip as string);
     }
 
     const author = await prisma.author.findUnique({
@@ -83,9 +93,10 @@ export const getBooksByAuthor = async(req: Request, res: Response) => {
                     where: filter,
                     orderBy: {
                         title: 'asc'
-                    }
+                    },
+                    ...pagination
                 }
-        }
+        },
     });
 
     if (author) res.status(200).json(author.books);
