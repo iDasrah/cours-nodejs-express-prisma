@@ -1,10 +1,29 @@
 import {prisma} from "../db";
-import {Request, Response} from "express";
+import {Request, Response, NextFunction} from "express";
 import {assert} from "superstruct";
 import {CreateUserData, LoginUserData} from "../validation/user";
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
 import {compare, hash} from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { expressjwt, Request as AuthRequest } from 'express-jwt';
+
+export const auth_client = [
+    expressjwt({
+        secret: process.env.JWT_SECRET as string,
+        algorithms: ['HS256'],
+    }),
+    async (req: AuthRequest, res: Response, next: NextFunction) => {
+        const user = await prisma.user.findUnique({
+            where: { id: Number(req.auth?.id) }
+        });
+        if (user) {
+            req.auth = user;
+            next();
+        } else {
+            res.status(401).send('Invalid token');
+        }
+    }
+];
 
 export const createUser = async(req: Request, res: Response) => {
     const {user} = req.body;

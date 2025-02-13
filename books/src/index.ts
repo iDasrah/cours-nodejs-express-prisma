@@ -13,7 +13,7 @@ import {
     getTagsByBook, removeTagFromBook,
     updateTag
 } from "./requestHandlers/tag";
-import {createUser, loginUser} from "./requestHandlers/user";
+import {createUser, loginUser, auth_client} from "./requestHandlers/user";
 import {createBookComment, deleteBookComment, getBookComments, updateBookComment} from "./requestHandlers/comment";
 import {
     createBookRating,
@@ -36,6 +36,8 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use('/books/:id/comments', auth_client);
+app.use('/books/:id/ratings', auth_client);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err instanceof HttpError) {
