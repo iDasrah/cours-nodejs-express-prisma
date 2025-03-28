@@ -11,3 +11,28 @@ datasource db {
 }
 
 // TODO : définir les modèles de données
+model Produit {
+  id       Int     @id @default(autoincrement())
+  intitule String  @unique
+  prix     Int
+  stock    Int
+  Vente    Vente[]
+}
+
+model Client {
+  id     Int     @id @default(autoincrement())
+  prenom String
+  nom    String
+  Vente  Vente[]
+}
+
+model Vente {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @default(now())
+  prix      Int
+  quantite  Int
+  produitId Int
+  produit   Produit  @relation(fields: [produitId], references: [id])
+  clientId  Int
+  client    Client   @relation(fields: [clientId], references: [id])
+}
