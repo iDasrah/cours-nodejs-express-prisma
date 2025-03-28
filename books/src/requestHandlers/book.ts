@@ -47,7 +47,7 @@ export const getAllBooks = async(req: Request, res: Response) => {
         ...pagination
     });
 
-    res.status(200).json(books).set('X-Total-Count', books.length.toString());
+    res.set('X-Total-Count', books.length.toString()).status(200).json(books);
 }
 
 export const getOneBook = async(req: Request, res: Response) => {
@@ -101,13 +101,13 @@ export const getBooksByAuthor = async(req: Request, res: Response) => {
         },
     });
 
-    if (author) res.status(200).json(author.books).set('X-Total-Count', author.books.length.toString());
+    if (author) res.set('X-Total-Count', author.books.length.toString()).status(200).json(author.books);
     else res.status(404).json({error: 'Author Not Found'});
 }
 
 export const createBook = async(req: Request, res: Response) => {
     const {id} = req.params;
-    const {book} = req.body;
+    const book = req.body;
     assert(book, BookCreationData);
 
     const createdBook = await prisma.book.create({
@@ -121,6 +121,7 @@ export const createBook = async(req: Request, res: Response) => {
         }
     });
 
+    console.log("createdBook", createdBook);
     res.status(201).json(createdBook);
 }
 

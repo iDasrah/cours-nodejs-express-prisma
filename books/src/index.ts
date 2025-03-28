@@ -23,6 +23,9 @@ import {
     updateBookRating
 } from "./requestHandlers/rating";
 
+import cors from 'cors';
+
+
 export const ReqParams = object({
     id: optional(refine(string(), 'int', (value) => isInt(value)))
 })
@@ -35,6 +38,7 @@ const validateParams = (req: Request, res: Response, next: NextFunction) => {
 const app = express();
 const port = 3000;
 
+app.use(cors());
 app.use(express.json());
 app.use('/books/:id/comments', auth_client);
 app.use('/books/:id/ratings', auth_client);
@@ -50,6 +54,12 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     } else {
         res.status(500).json({error: 'Internal Server Error'});
 }});
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.header('Access-Control-Expose-Headers', 'X-Total-Count');
+    next();
+});
+
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!');

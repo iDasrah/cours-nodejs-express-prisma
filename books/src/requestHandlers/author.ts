@@ -54,7 +54,7 @@ export const getAllAuthors = async(req: Request, res: Response) => {
         ...pagination
     });
 
-    res.status(200).json(authors).set('X-Total-Count', authors.length.toString());
+    res.set('X-Total-Count', authors.length.toString()).status(200).json(authors);
 }
 
 export const getOneAuthor = async(req: Request, res: Response) => {
@@ -70,7 +70,7 @@ export const getOneAuthor = async(req: Request, res: Response) => {
 }
 
 export const createAuthor = async(req: Request, res: Response) => {
-    const { author } = req.body;
+    const author = req.body;
     assert(author, AuthorCreationData);
 
     const createdAuthor = await prisma.author.create(
