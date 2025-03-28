@@ -29,7 +29,7 @@ app.route("/produits")
     .post(product.addProduct);
 
 app.route("/produits/:id")
-    .get(product.getOneProduct)
+    .get(product.getOneProduct) // ??
     .patch(product.updateProduct)
     .delete(product.deleteProduct);
 
@@ -38,7 +38,7 @@ app.route("/clients")
     .post(client.addClient);
 
 app.route("/clients/:id")
-    .get(client.getOneClient)
+    .get(client.getOneClient) // ??
     .patch(client.updateClient)
     .delete(client.deleteClient);
 
