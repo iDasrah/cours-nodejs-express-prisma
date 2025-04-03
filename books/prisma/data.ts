@@ -250,18 +250,16 @@ export const authors = [
                 {
                     title: 'The Hobbit',
                     publication_year: 1937,
-                    tags: [
-                        {
-                            connect: {
+                    tags: {
+                        connect: [
+                            {
                                 name: 'Fantasy'
-                            }
-                        },
-                        {
-                            connect: {
+                            },
+                            {
                                 name: 'Adventure'
                             }
-                        }
-                    ],
+                        ]
+                    }
                 },
                 {
                     title: 'The Lord of the Rings',
