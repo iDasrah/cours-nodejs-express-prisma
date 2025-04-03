@@ -12,9 +12,6 @@ export const tags = [
         name: 'Mystery'
     },
     {
-        name: 'Thriller'
-    },
-    {
         name: 'Romance'
     },
     {
