@@ -503,21 +503,15 @@ export const authors = [
                         title: 'Murder on the Orient Express',
                         publication_year: 1934,
                         tags: {
-                            connect: [
+                            connect:
                                 {
                                     name: 'Mystery'
                                 }
-                            ]
                         }
                     },
                     {
                         title: 'And Then There Were None',
                         publication_year: 1939,
-                        tags: {
-                            connect: [
-
-                            ]
-                        }
                     }
                 ]
             }
@@ -530,11 +524,6 @@ export const authors = [
                     {
                         title: 'Harry Potter and the Philosopher\'s Stone',
                         publication_year: 1997,
-                        tags: {
-                            connect: [
-
-                            ]
-                        }
                     },
                     {
                         title: 'Harry Potter and the Chamber of Secrets',
