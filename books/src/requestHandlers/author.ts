@@ -84,7 +84,7 @@ export const createAuthor = async(req: Request, res: Response) => {
 
 export const updateAuthor = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { author } = req.body;
+    const author = req.body;
     assert(author, AuthorUpdateData);
 
     try {

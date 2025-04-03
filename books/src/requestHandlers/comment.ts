@@ -18,7 +18,7 @@ export const getBookComments = async(req: Request, res: Response) => {
 
 export const createBookComment = async(req: Request, res: Response) => {
     const { id } = req.params;
-    const { comment } = req.body;
+    const comment = req.body;
 
     const createdComment = await prisma.comment.create({
         data: {
@@ -36,7 +36,7 @@ export const createBookComment = async(req: Request, res: Response) => {
 
 export const updateBookComment = async(req: Request, res: Response) => {
     const { id } = req.params;
-    const { comment } = req.body;
+    const comment = req.body;
 
     const updatedComment = await prisma.comment.update({
         where: {

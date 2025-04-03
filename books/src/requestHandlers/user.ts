@@ -26,7 +26,7 @@ export const auth_client = [
 ];
 
 export const createUser = async(req: Request, res: Response) => {
-    const {user} = req.body;
+    const user = req.body;
     assert(user, CreateUserData);
 
     user.password = await hash(user.password, 10);
@@ -54,7 +54,7 @@ export const createUser = async(req: Request, res: Response) => {
 }
 
 export const loginUser = async(req: Request, res: Response) => {
-    const { user } = req.body;
+    const user = req.body;
     assert(user, LoginUserData);
 
     const foundUser = await prisma.user.findUnique({

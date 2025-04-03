@@ -135,7 +135,7 @@ export const createBook = async(req: Request, res: Response) => {
 
 export const updateBook = async(req: Request, res: Response) => {
     const {id} = req.params;
-    const {book} = req.body;
+    const book = req.body;
     assert(book, BookUpdateData);
 
     try {

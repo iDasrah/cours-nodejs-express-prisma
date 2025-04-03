@@ -40,7 +40,7 @@ export const getTagsByBook = async (req: Request, res: Response) => {
 }
 
 export const createTag = async (req: Request, res: Response) => {
-    const { tag } = req.body;
+    const tag = req.body;
     assert(tag, TagCreationData);
 
     try {
@@ -58,7 +58,7 @@ export const createTag = async (req: Request, res: Response) => {
 
 export const updateTag = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { tag } = req.body;
+    const tag = req.body;
     assert(tag, TagUpdateData);
 
     try {

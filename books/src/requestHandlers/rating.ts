@@ -18,7 +18,7 @@ export const getBookRatings = async(req: Request, res: Response) => {
 
 export const createBookRating = async(req: Request, res: Response) => {
     const { id } = req.params;
-    const {rating} = req.body;
+    const rating = req.body;
     assert(rating, RatingData);
 
     const createdRating = await prisma.rating.create({
@@ -37,7 +37,7 @@ export const createBookRating = async(req: Request, res: Response) => {
 
 export const updateBookRating = async(req: Request, res: Response) => {
     const {id} = req.params;
-    const {rating} = req.body;
+    const rating = req.body;
     assert(rating, RatingData);
 
     const updatedRating = await prisma.rating.update({
