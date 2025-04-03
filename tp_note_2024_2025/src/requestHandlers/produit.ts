@@ -42,7 +42,7 @@ export const getOneProduct = async (req: Request, res: Response) => {
     });
 
     if (!product) {
-        return res.status(404).json({ message: "Produit non trouvé" });
+        return res.status(404);
     }
 
     res.json(product).status(200);

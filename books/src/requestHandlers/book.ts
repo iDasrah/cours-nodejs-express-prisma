@@ -56,6 +56,14 @@ export const getOneBook = async(req: Request, res: Response) => {
     const book = await prisma.book.findUnique({
         where: {
             id: parseInt(id)
+        },
+        include: {
+            author: {
+                select: {
+                    firstName: true,
+                    lastName: true
+                }
+            }
         }
     });
 
