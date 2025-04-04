@@ -14,12 +14,6 @@ async function main() {
             data: author,
         });
     }
-
-    for (const user of users) {
-        await prisma.user.create({
-            data: user,
-        });
-    }
 }
 
 main()
