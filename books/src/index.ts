@@ -13,7 +13,6 @@ import {
     getTagsByBook, removeTagFromBook,
     updateTag
 } from "./requestHandlers/tag";
-import {createUser, loginUser, auth_client} from "./requestHandlers/user";
 import {createBookComment, deleteBookComment, getBookComments, updateBookComment} from "./requestHandlers/comment";
 import {
     createBookRating,
@@ -40,8 +39,6 @@ const port = 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use('/books/:id/comments', auth_client);
-app.use('/books/:id/ratings', auth_client);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err instanceof HttpError) {
@@ -109,11 +106,6 @@ app.route('/books/:book_id/tags/:tag_id')
     .delete(removeTagFromBook);
 
 app.get('/books/:id/tags', getTagsByBook);
-
-// USERS
-
-app.post('/signup', createUser);
-app.post('/signin', loginUser);
 
 // COMMENTS
 
